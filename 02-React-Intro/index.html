@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>React - Intro</title>
+	<script src="react.js"></script>
+	<script src="react-dom.js"></script>
+	<script src="jquery-3.2.1.js"></script>
+	<script>
+		var HelloWorld = React.createClass({
+			render : function(){
+				return React.createElement('h1', {}, 'Welcome to React.js');
+			}
+		});
+
+		function JQHelloWorld(){
+			var $root = this.$root = $('<div></div>');
+			var _template = '<h1>Welcome to jQuery.js</h1>';
+			this.render = function(){
+				$root.html(_template);
+			}
+		}
+
+
+		$(function(){
+			$('#btnReactView').click(function(){
+				ReactDOM.render(React.createElement(HelloWorld), document.getElementById('react-content'));
+			})
+
+			var jQView = new JQHelloWorld();
+			$('#btnjQueryView').click(function(){
+				jQView.render();
+				jQView.$root.appendTo('#jq-content')
+			});
+		});
+
+	</script>
+</head>
+<body>
+	<input type="button" value="Render React" id="btnReactView">
+	<div id="react-content">
+		
+	</div>
+	<hr>
+	<input type="button" value="Render JQuery" id="btnjQueryView">
+	<div id="jq-content">
+		
+	</div>
+</body>
+</html>
