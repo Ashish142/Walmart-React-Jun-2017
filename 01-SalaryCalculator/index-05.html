@@ -34,16 +34,26 @@
 			this.salary = 0;
 
 			
-			this.onChange = null;
+			this._listeners = [];
 		}
+
+		SalaryCalculator.prototype.subscribe = function(listenerFn) {
+			if (typeof listenerFn === 'function')
+				this._listeners.push(listenerFn)
+		};
+
+		SalaryCalculator.prototype.trigger = function() {
+			this._listeners.forEach(function(listenerFn){
+				listenerFn();
+			});
+		};
 
 		//behavior
 		SalaryCalculator.prototype.calculate = function() {
 			var gross = this.basic + this.hra + this.da;
 			var net = gross * ((100-this.tax)/100);
 			this.salary = net;
-			if (typeof this.onChange === 'function')
-				this.onChange();
+			this.trigger();
 		};
 
 
@@ -74,9 +84,9 @@
 			});
 
 			//React to model changes
-			calculator.onChange = function(){
+			calculator.subscribe(function(){
 				$('#divResult').html(calculator.salary);
-			}
+			});
 		});
 	</script>
 </head>
