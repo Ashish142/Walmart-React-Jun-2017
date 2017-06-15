@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>React - Intro</title>
+	
+	<script src="react.js"></script>
+	<script src="react-dom.js"></script>
+	<script src="jquery-3.2.1.js"></script>
+	<script src="babel.min.js"></script>
+	
+	<script type="text/babel">
+		var ProductList = React.createClass({
+			getInitialState : function(){
+				return { list : ['Pen', 'Pencil'] };
+			},
+			onAddNewClick : function(){
+				var newProduct = this.refs.txtProductName.value;
+				var productList = this.state.list;
+				productList.push(newProduct);
+				this.setState({list : productList})
+			},
+			render : function(){
+				var productItems = this.state.list.map(function(product, index){
+					return (<li key={index}>{product}</li>);
+				});
+
+				return(
+					<div>
+						<label>Product Name :</label>
+						<input type="text" ref="txtProductName" />
+						<input type="button" value="Add New" onClick={this.onAddNewClick} />
+						<ol>
+						{productItems}
+						</ol>
+					</div>
+				)
+			}
+		})
+
+		$(function(){
+			ReactDOM.render(<ProductList></ProductList>, document.getElementById('content'));
+		})
+	</script>
+	
+</head>
+<body>
+	<div id="content"></div>
+</body>
+</html>
