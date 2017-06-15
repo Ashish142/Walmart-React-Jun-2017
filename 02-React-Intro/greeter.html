@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>React - Intro</title>
+	<script src="react.js"></script>
+	<script src="react-dom.js"></script>
+	<script src="jquery-3.2.1.js"></script>
+	<script src="babel.min.js"></script>
+	<script type="text/babel">
+		var Greeter = React.createClass({
+			getInitialState : function(){
+				return { data : '' };
+			},
+			onBtnGreetClick : function(){
+				var msg = this.refs.txtMessage.value;
+				this.setState({ data : msg });
+			},
+			render : function(){
+				var message = this.state.data;
+				return(
+					<div>
+						<label>Message :</label>
+						<input type="text" ref="txtMessage"/>
+						<input id="btnGreet" value="Greet" type="button" onClick={this.onBtnGreetClick}/>
+						<h1>{message}</h1>
+					</div>
+				)
+			}
+		});
+
+		
+
+
+		$(function(){
+			ReactDOM.render(<Greeter></Greeter>, document.getElementById('react-content'));
+		});
+
+	</script>
+</head>
+<body>
+	
+	<div id="react-content">
+		
+	</div>
+	
+</body>
+</html>
