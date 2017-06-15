@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>React - Intro</title>
+	<script src="react.js"></script>
+	<script src="react-dom.js"></script>
+	<script src="jquery-3.2.1.js"></script>
+	<script src="babel.min.js"></script>
+	<script type="text/babel">
+		var HelloWorld = React.createClass({
+			render : function(){
+				/*
+				return 
+					React.createElement('div', {}, 
+						React.createElement('h1', {}, 'Welcome to React.js'),
+						React.createElement('hr', {}, null),
+						React.createElement('p', {}, 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum delectus reprehenderit corrupti cupiditate officia veritatis beatae, eum molestias dolor necessitatibus qui ducimus suscipit tenetur similique sequi minus dignissimos perferendis quod!'),
+						React.createElement('p', {}, 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum delectus reprehenderit corrupti cupiditate officia veritatis beatae, eum molestias dolor necessitatibus qui ducimus suscipit tenetur similique sequi minus dignissimos perferendis quod!')
+					);
+				*/
+				return(
+					<div>
+						<h1>Welcome to React.js</h1>
+						<hr />
+						<p>
+							Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum delectus reprehenderit corrupti cupiditate officia veritatis beatae, eum molestias dolor necessitatibus qui ducimus suscipit tenetur similique sequi minus dignissimos perferendis quod!
+						</p>
+						<p>
+							Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum delectus reprehenderit corrupti cupiditate officia veritatis beatae, eum molestias dolor necessitatibus qui ducimus suscipit tenetur similique sequi minus dignissimos perferendis quod!
+						</p>
+					</div>
+				)
+
+			}
+		});
+
+		
+
+
+		$(function(){
+				ReactDOM.render(React.createElement(HelloWorld), document.getElementById('react-content'));
+		});
+
+	</script>
+</head>
+<body>
+	
+	<div id="react-content">
+		
+	</div>
+	
+</body>
+</html>
