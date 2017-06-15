@@ -60,67 +60,81 @@
 		};
 
 		var SalaryCalculator = React.createClass({
-			getInitialState : function(){
-				return {
-					basic : 0,
-					hra : 0,
-					da : 0,
-					tax : 0,
-					salary : 0
-				}
+			onBasicChange : function(basic){
+				this.props.model.basic = basic;
 			},
-			onBasicChange : function(evt){
-				var value = evt.target.value.toInt();
-				this.setState({basic : value});
-				this.props.model.basic = value;
+			onHraChange : function(hra){
+				this.props.model.hra = hra;
 			},
-			onHraChange : function(evt){
-				var value = evt.target.value.toInt();
-				this.setState({hra : value});
-				this.props.model.hra = evt.target.value.toInt();
+			onDaChange : function(da){
+				this.props.model.da = da;
 			},
-			onDaChange : function(evt){
-				var value = evt.target.value.toInt();
-				this.setState({da : value});
-				this.props.model.da = evt.target.value.toInt();
-			},
-			onTaxChange : function(evt){
-				var value = evt.target.value.toInt();
-				this.setState({tax : value});
-				this.props.model.tax = evt.target.value.toInt();
+			onTaxChange : function(tax){
+				this.props.model.tax = tax;
 			},
 			onCalculateClick : function(){
 				this.props.model.calculate();
 			},
 			render : function(){
-				var calculator = this.props.model;
 				return(
 					<div className="content">
-						<div className="field">
-							<label htmlFor="">Basic :</label>
-							<input type="number"  ref="txtBasic" value={this.state.basic} onChange={this.onBasicChange}/>
-						</div>
-						<div className="field">
-							<label htmlFor="">HRA :</label>
-							<input type="number"  ref="txtHra" value={this.state.hra} onChange={this.onHraChange}/>
-						</div>
-						<div className="field">
-							<label htmlFor="">DA :</label>
-							<input type="number"  ref="txtDa" value={this.state.da} onChange={this.onDaChange}/>
-						</div>
-						<div className="field">
-							<label htmlFor="">Tax :</label>
-							<input type="range"  ref="rangeTax" min="0" max="30" value={this.state.tax} onChange={this.onTaxChange} />
-							<span id="spanTax">{this.state.tax}</span>
-						</div>
+						<NumberInput label="Basic :" onValueChange={this.onBasicChange}></NumberInput>
+						<NumberInput label="HRA :" onValueChange={this.onHraChange}></NumberInput>
+						<NumberInput label="DA :" onValueChange={this.onDaChange}></NumberInput>
+						<RangeInput lebel="Tax :" onValueChange={this.onTaxChange}></RangeInput>
 						<div className="field">
 							<input type="button" value="Calculate" onClick={this.onCalculateClick} />
 						</div>
-						<div className="field">
-							<div id="divResult">{calculator.salary}</div>
-						</div>
+						<SalaryDisplay data={this.props.model.salary}></SalaryDisplay>
 					</div>
 				);
+			}
+		});
+
+		var RangeInput = React.createClass({
+			getInitialState : function(){
+				return { value : 0}
+			},
+			onControlChange : function(evt){
+				var value = evt.target.value.toInt();
+				this.setState({value : value});
+				this.props.onValueChange(value);
+			},
+			render : function(){
+				return(
+					<div className="field">
+						<label htmlFor="">Tax :</label>
+						<input type="range"  ref="rangeTax" min="0" max="30" value={this.state.value} onChange={this.onControlChange} />
+						<span id="spanTax">{this.state.value}</span>
+					</div>
+				)
+			}
+		})
+		var NumberInput = React.createClass({
+			getInitialState : function(){
+				return { value : 0}
+			},
+			onControlChange : function(evt){
+				var value = evt.target.value.toInt();
+				this.setState({value : value});
+				this.props.onValueChange(value);
+			},
+			render : function(){
+				return(
+					<div className="field">
+						<label htmlFor="">{this.props.label}</label>
+						<input type="number"  value={this.state.value} onChange={this.onControlChange}/>
+					</div>
+				)
+			}
+		})
+		var SalaryDisplay = React.createClass({
+			render : function(){
+				return(
+					<div className="field">
+						<div id="divResult">{this.props.data}</div>
+					</div>
+				)
 			}
 		})
 
