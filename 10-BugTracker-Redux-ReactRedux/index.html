@@ -60,6 +60,17 @@
 			}
 		}
 
+		function counterReducer(currentState = 0, action){
+			switch(action.type){
+				case 'INCREMENT':
+					return ++currentState;
+				case 'DECREMENT':
+					return --currentState;
+				default:
+					return currentState
+			}
+		}
+
 		var bugActionCreators = {
 			createNew : function(bugName){
 				return {
@@ -77,6 +88,16 @@
 				return { type : 'REMOVE_CLOSED'}
 			}
 		}
+
+		let counterActionCreators = {
+			increment : function(){
+				return { type : 'INCREMENT' };
+			},
+			decrement : function(){
+				return { type : 'DECREMENT' };
+			}
+		};
+
 
 		{/*function bindActionCreators(actionCreators, dispatch){
 			var result = {};
@@ -160,15 +181,40 @@
 		let ConnectedBugTracker = ReactRedux.connect(mapStateToProps, mapDispatchToProps)(BugTracker);*/}
 
 		let ConnectedBugTracker = ReactRedux.connect(
-			(state) => ({ model : state}),
+			(state) => ({ model : state.bugs}),
 			(dispatch) => Redux.bindActionCreators(bugActionCreators, dispatch)
 		)(BugTracker);
 
 
-		let store = Redux.createStore(bugsReducer);
+		let Counter = function({increment, decrement, value}){
+			return(
+				<div>
+					<input type="button" value="DECREMENT" onClick={increment}/>
+					<span> {value} </span>
+					<input type="button" value="INCREMENT" onClick={decrement}/>
+				</div>
+			)
+		};
+		
+		let ConnectedCounter = ReactRedux.connect(
+			(state) => ({ value : state.counter }),
+			(dispatch) => Redux.bindActionCreators(counterActionCreators, dispatch) 
+		)(Counter);
+
+		let allReducers = Redux.combineReducers({
+			bugs : bugsReducer,
+			counter : counterReducer
+		});
+
+		let store = Redux.createStore(allReducers);
+
 		ReactDOM.render(
 			<ReactRedux.Provider store={store}>
-				<ConnectedBugTracker></ConnectedBugTracker>
+				<div>
+					<ConnectedBugTracker></ConnectedBugTracker>
+					<hr />
+					<ConnectedCounter></ConnectedCounter>
+				</div>
 			</ReactRedux.Provider>
 		, document.getElementById('content'));
 
