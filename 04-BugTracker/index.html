@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Bug Tracker</title>
+	<style>
+		body{
+			margin-left: 50px;
+		}
+		.bugname, .stats{
+			font-size: 22pt;
+		}
+		.bugname{
+			cursor: pointer;
+		}
+		.closed{
+			color : red;
+			text-decoration: line-through;
+			font-style: italic;
+		}
+		ol{
+			list-style: none;
+			width: 500px;
+			-webkit-padding-start : 0px;
+		}
+		li{
+			margin-bottom: 10px;
+			border : 2px solid gray;
+			background-color: #e7e7e7;
+			padding : 10px;
+			border-radius: 5px;
+		}
+		.datetime{
+			font-style: italic;
+		}
+	</style>
+	<script src="react.js"></script>
+	<script src="react-dom.js"></script>
+	<script src="babel.min.js"></script>
+	<script src="jquery-3.2.1.js"></script>
+	<script type="text/babel">
+		class EventEmitter{
+			
+			constructor(){
+				this._listeners = [];
+			}
+
+			subscribe(listenerFn) {
+				if (typeof listenerFn === 'function')
+					this._listeners.push(listenerFn)
+			}
+			trigger() {
+				this._listeners.forEach(listenerFn => listenerFn());
+			}
+		}
+		class BugsCollection extends EventEmitter{
+			constructor(){
+				super();
+				this._list = ['bug - 1', 'bug-2'];
+			}
+			add(bugName){
+				this._list.push(bugName);
+				this.trigger();
+			}
+		}
+		class BugTracker extends React.Component{
+			constructor(props){
+				super(props);
+			}
+			onAddNewClick(){
+				let bugName = this.refs.txtBugName.value;
+				this.props.model.add(bugName);
+			}
+			render(){
+				let bugs = this.props.model._list;
+				let bugItems = bugs.map((bug,index) => (
+					<li key={index}>
+						<span className="bugname">{bug}</span>
+						<div className="datetime">[Created At]</div>
+					</li>
+				));
+				return (
+					<div>
+						<section className="stats">
+							<span className="closed">2</span>
+							<span> / </span>
+							<span>{bugs.length}</span>
+						</section>
+						<section className="edit">
+							<label >Bug :</label>
+							<input type="text" ref="txtBugName" />
+							<input type="button" value="Add New" onClick={this.onAddNewClick.bind(this)} />
+						</section>
+						<section className="list">
+							<ol>
+								{bugItems}
+							</ol>
+							<input type="button" value="Remove Closed" />
+						</section>
+					</div>
+				)
+			}
+		}
+
+		let bugsCollection = new BugsCollection();
+		function renderApp(){
+			ReactDOM.render(<BugTracker model={bugsCollection}></BugTracker>, document.getElementById('content'));
+		}
+		renderApp();
+		bugsCollection.subscribe(renderApp);
+	</script>
+</head>
+<body>
+	<h1>Bug Tracker</h1>
+	<hr>
+	<div id="content">
+		
+	</div>
+</body>
+</html>
