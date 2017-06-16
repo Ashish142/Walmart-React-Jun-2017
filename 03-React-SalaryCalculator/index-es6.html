@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>React - Intro</title>
+	<style>
+		body{
+			margin-left: 50px;
+		}
+		.field{
+			margin-bottom: 10px;
+		}
+		label{
+			display: block;
+		}
+		#divResult{
+			font-size: 22pt;
+		}
+		.ok{
+			color : green;
+		}
+		.notok {
+			color : red;
+		}
+	</style>
+	<script src="react.js"></script>
+	<script src="react-dom.js"></script>
+	<script src="jquery-3.2.1.js"></script>
+	<script src="babel.min.js"></script>
+
+	<script type="text/babel">
+		String.prototype.toInt = function(){
+			return parseInt(this, 10);
+		};
+
+		class EventEmitter{
+			
+			constructor(){
+				this._listeners = [];
+			}
+
+			subscribe(listenerFn) {
+				if (typeof listenerFn === 'function')
+					this._listeners.push(listenerFn)
+			}
+			trigger() {
+				this._listeners.forEach(listenerFn => listenerFn());
+			}
+		}
+
+		//Model
+		class SalaryCalculatorModel extends EventEmitter{
+			constructor (){
+				super();
+				//state
+				this.basic = 0;
+				this.hra = 0;
+				this.da = 0;
+				this.tax = 0;
+				this.salary = 0;
+				
+				
+			}
+			
+			calculate() {
+				var gross = this.basic + this.hra + this.da;
+				var net = gross * ((100-this.tax)/100);
+				this.salary = net;
+				this.trigger();
+			}
+
+		}
+
+		
+		class SalaryCalculator extends React.Component{
+			onBasicChange(basic){
+				this.props.model.basic = basic;
+			}
+			onHraChange(hra){
+				this.props.model.hra = hra;
+			}
+			onDaChange(da){
+				this.props.model.da = da;
+			}
+			onTaxChange(tax){
+				this.props.model.tax = tax;
+			}
+			onCalculateClick(){
+				this.props.model.calculate();
+			}
+			render(){
+				return(
+					<div className="content">
+						<NumberInput label="Basic :" onValueChange={this.onBasicChange.bind(this)}></NumberInput>
+						<NumberInput label="HRA :" onValueChange={this.onHraChange.bind(this)}></NumberInput>
+						<NumberInput label="DA :" onValueChange={this.onDaChange.bind(this)}></NumberInput>
+						<RangeInput lebel="Tax :" onValueChange={this.onTaxChange.bind(this)}></RangeInput>
+						<div className="field">
+							<input type="button" value="Calculate" onClick={this.onCalculateClick.bind(this)} />
+						</div>
+						<SalaryDisplay data={this.props.model.salary}></SalaryDisplay>
+					</div>
+				);
+			}
+		}
+
+		class RangeInput extends React.Component{
+			constructor(props){
+				super(props);
+				this.state = { value : 0 };
+			}
+			onControlChange(evt){
+				let value = evt.target.value.toInt();
+				this.setState({value : value});
+				this.props.onValueChange(value);
+			}
+			render(){
+				return(
+					<div className="field">
+						<label htmlFor="">Tax :</label>
+						<input type="range"  ref="rangeTax" min="0" max="30" value={this.state.value} onChange={this.onControlChange.bind(this)} />
+						<span id="spanTax">{this.state.value}</span>
+					</div>
+				)
+			}
+		}
+
+
+		class NumberInput extends React.Component{
+			constructor(props){
+				super(props)
+				this.state = { value : 0 };
+			}
+			
+			onControlChange(evt){
+				let value = evt.target.value.toInt();
+				this.setState({value : value});
+				this.props.onValueChange(value);
+			}
+			render(){
+				return(
+					<div className="field">
+						<label htmlFor="">{this.props.label}</label>
+						<input type="number"  value={this.state.value} onChange={this.onControlChange.bind(this)}/>
+					</div>
+				)
+			}
+		}
+
+		class SalaryDisplay extends React.Component{
+			render(){
+				let salaryElement = this.props.data > 20000 ? 
+					(<div className="ok" id="divResult">{this.props.data}</div>) :
+					(<div className="notok" id="divResult">{this.props.data}</div>);
+
+				return(
+					<div className="field">
+						{salaryElement}
+					</div>
+				)
+			}
+		}
+
+		let model = new SalaryCalculatorModel();
+		function renderApp(){
+			ReactDOM.render(<SalaryCalculator model={model}></SalaryCalculator>, document.getElementById('content'))
+		}
+		$(renderApp);
+		model.subscribe(renderApp);
+
+	</script>
+</head>
+<body>
+	<div id="content"></div>
+</body>
+</html>
