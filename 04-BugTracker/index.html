@@ -53,13 +53,27 @@
 				this._listeners.forEach(listenerFn => listenerFn());
 			}
 		}
+
+		class BugModel{
+			constructor(name){
+				this.name = name;
+				this.isClosed = false;
+				this.createAt = new Date();
+			}
+			toggle(){
+				this.isClosed = !this.isClosed;
+			}
+		}
+
+
 		class BugsCollection extends EventEmitter{
 			constructor(){
 				super();
-				this._list = ['bug - 1', 'bug-2'];
+				this._list = [];
 			}
 			add(bugName){
-				this._list.push(bugName);
+				let newBug = new BugModel(bugName);
+				this._list.push(newBug);
 				this.trigger();
 			}
 		}
@@ -71,13 +85,11 @@
 				let bugName = this.refs.txtBugName.value;
 				this.props.model.add(bugName);
 			}
+			
 			render(){
 				let bugs = this.props.model._list;
 				let bugItems = bugs.map((bug,index) => (
-					<li key={index}>
-						<span className="bugname">{bug}</span>
-						<div className="datetime">[Created At]</div>
-					</li>
+					<BugItem key={index} model={bug}></BugItem>
 				));
 				return (
 					<div>
@@ -98,6 +110,24 @@
 							<input type="button" value="Remove Closed" />
 						</section>
 					</div>
+				)
+			}
+		}
+
+		class BugItem extends React.Component{
+			constructor(props){
+				super(props)
+			}
+			onBugItemClick(){
+				console.log(this.props.model, ' - bug item is clicked');
+			}
+			render(){
+				var bug = this.props.model;
+				return(
+					<li>
+						<span className="bugname" onClick={this.onBugItemClick.bind(this)}>{bug.name}</span>
+						<div className="datetime">[{bug.createAt.toString()}]</div>
+					</li>
 				)
 			}
 		}
